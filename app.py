@@ -35,7 +35,7 @@ def load_pipeline():
 
 pipe = load_pipeline()
 
-@app.post("/generate")
+'''@app.post("/generate")
 async def generate(req: Request):
     body = await req.json()
     prompt = body.get("prompt", "")
@@ -48,4 +48,22 @@ async def generate(req: Request):
     buf = io.BytesIO()
     image.save(buf, format='PNG')
     img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    return {"image": img_b64}'''
+@app.post("/generate")
+async def generate(req: Request):
+    body = await req.json()
+    prompt = body.get("prompt", "")
+
+    if not prompt:
+        return JSONResponse({"error": "No prompt provided"}, status_code=400)
+
+    generator = torch.manual_seed(0)
+
+    # dummy image for illustration — replace with your pipeline
+    image = Image.new("RGB", (256, 256), color="red").resize((200, 200))
+
+    buf = io.BytesIO()
+    image.save(buf, format='PNG')
+    img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
     return {"image": img_b64}
